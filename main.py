@@ -12,13 +12,13 @@ import matplotlib.pyplot as plt
 import matplotlib
 
 """ Predefined UUID (Universal Unique Identifier) mapping are based on Heart Rate GATT service Protocol that most
-Fitness/Heart Rate device manufacturer follow (Polar H10 in this case) to obtain a specific response input from 
+Fitness/Heart Rate device manufacturer follow (Polar H10 in this case) to obtain a specific response input from
 the device acting as an API """
 
 uuid16_dict = {v: k for k, v in uuid16_dict.items()}
 
-## This is the device MAC ID, please update with your device ID
-ADDRESS = "D4:52:48:88:EA:04"
+# This is the device MAC ID, please update with your device ID
+ADDRESS = "EC:CD:5B:B7:75:F5"
 
 ## UUID for model number ##
 MODEL_NBR_UUID = "0000{0:x}-0000-1000-8000-00805f9b34fb".format(
@@ -56,7 +56,7 @@ ecg_session_data = []
 ecg_session_time = []
 
 
-## Positoning/Pinnning the real-time plot window on the screen
+# Positoning/Pinnning the real-time plot window on the screen
 def move_figure(f, x, y):
     """Move figure's upper left corner to pixel (x, y)"""
     backend = matplotlib.get_backend()
@@ -70,13 +70,13 @@ def move_figure(f, x, y):
         f.canvas.manager.window.move(x, y)
 
 
-## Keyboard Interrupt Handler
+# Keyboard Interrupt Handler
 def keyboardInterrupt_handler(signum, frame):
     print("  key board interrupt received...")
     print("----------------Recording stopped------------------------")
 
 
-## Bit conversion of the Hexadecimal stream
+# Bit conversion of the Hexadecimal stream
 def data_conv(sender, data):
     if data[0] == 0x00:
         timestamp = convert_to_unsigned_long(data, 1, 8)
@@ -92,13 +92,13 @@ def data_conv(sender, data):
 
 def convert_array_to_signed_int(data, offset, length):
     return int.from_bytes(
-        bytearray(data[offset : offset + length]), byteorder="little", signed=True,
+        bytearray(data[offset: offset + length]), byteorder="little", signed=True,
     )
 
 
 def convert_to_unsigned_long(data, offset, length):
     return int.from_bytes(
-        bytearray(data[offset : offset + length]), byteorder="little", signed=False,
+        bytearray(data[offset: offset + length]), byteorder="little", signed=False,
     )
 
 
@@ -123,12 +123,12 @@ async def run(client, debug=False):
 
     await client.write_gatt_char(PMD_CONTROL, ECG_WRITE)
 
-    ## ECG stream started
+    # ECG stream started
     await client.start_notify(PMD_DATA, data_conv)
 
     print("Collecting ECG data...")
 
-    ## Plot configurations
+    # Plot configurations
     plt.style.use("ggplot")
     fig = plt.figure(figsize=(15, 6))
     move_figure(fig, 2300, 0)
@@ -148,7 +148,7 @@ async def run(client, debug=False):
 
     while True:
 
-        ## Collecting ECG data for 1 second
+        # Collecting ECG data for 1 second
         await asyncio.sleep(1)
         plt.autoscale(enable=True, axis="y", tight=True)
         ax.plot(ecg_session_data, color="r")
@@ -158,7 +158,7 @@ async def run(client, debug=False):
 
     plt.show()
 
-    ## Stop the stream once data is collected
+    # Stop the stream once data is collected
     await client.stop_notify(PMD_DATA)
     print("Stopping ECG data...")
     print("[CLOSED] application closed.")
