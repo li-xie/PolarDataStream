@@ -54,9 +54,11 @@ ECG_SAMPLING_FREQ = 130
 
 ecg_session_data = []
 ecg_session_time = []
-
+run_flag = True
 
 # Positoning/Pinnning the real-time plot window on the screen
+
+
 def move_figure(f, x, y):
     """Move figure's upper left corner to pixel (x, y)"""
     backend = matplotlib.get_backend()
@@ -72,6 +74,7 @@ def move_figure(f, x, y):
 
 # Keyboard Interrupt Handler
 def keyboardInterrupt_handler(signum, frame):
+    run_flag = False
     print("  key board interrupt received...")
     print("----------------Recording stopped------------------------")
 
@@ -147,7 +150,7 @@ async def run(client, debug=False):
     #
     # n = ECG_SAMPLING_FREQ
 
-    while True:
+    while run_flag:
 
         # Collecting ECG data for 1 second
         await asyncio.sleep(1)
