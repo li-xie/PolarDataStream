@@ -1,0 +1,13 @@
+The plot window appeared, but nothing was plotted. The plot doesn't respond and has to be killed.
+
+/home/lxie2/Documents/Python3/PolarDataStream/main.py:110: FutureWarning: is_connected has been changed to a property. Calling it as an async method will be removed in a future version
+  await client.is_connected()
+---------Device connected--------------
+Model Number: H10
+Collecting ECG data...
+Executing <Task pending name='Task-6' coro=<run() running at /home/lxie2/Documents/Python3/PolarDataStream/main.py:152> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7ff8b977f040>()] created at /home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/base_events.py:424> cb=[gather.<locals>._done_callback() at /home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/tasks.py:766] created at /home/lxie2/Documents/Python3/PolarDataStream/main.py:174> took 1.639 seconds
+Executing <Task pending name='Task-6' coro=<run() running at /home/lxie2/Documents/Python3/PolarDataStream/main.py:152> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7ff8b370c6a0>()] created at /home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/base_events.py:424> cb=[gather.<locals>._done_callback() at /home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/tasks.py:766] created at /home/lxie2/Documents/Python3/PolarDataStream/main.py:174> took 0.236 seconds
+Executing <Task pending name='Task-6' coro=<run() running at /home/lxie2/Documents/Python3/PolarDataStream/main.py:152> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7ff89ffb08e0>()] created at /home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/base_events.py:424> cb=[gather.<locals>._done_callback() at /home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/tasks.py:766] created at /home/lxie2/Documents/Python3/PolarDataStream/main.py:174> took 0.117 seconds
+^C  key board interrupt received...
+----------------Recording stopped------------------------
+Killed
