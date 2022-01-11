@@ -1,0 +1,40 @@
+/home/lxie2/Documents/Python3/PolarDataStream/no_plot_GF.py:114: FutureWarning: is_connected has been changed to a property. Calling it as an async method will be removed in a future version
+  await client.is_connected()
+---------Device connected--------------
+Model Number: H10
+Collecting ECG data...
+data_conv: 599620780869922840
+run: 599620780869922840
+data_conv: 599620781431270932
+data_conv: 599620781992619024
+run: 599620781992619024
+data_conv: 599620782553967116
+run: 599620782553967116
+data_conv: 599620783115315208
+data_conv: 599620783676663300
+run: 599620783676663300
+data_conv: 599620784237980874
+data_conv: 599620784799328966
+run: 599620784799328966
+data_conv: 599620785360677058
+data_conv: 599620785922025150
+run: 599620785922025150
+data_conv: 599620786483373242
+run: 599620786483373242
+data_conv: 599620787044690812
+data_conv: 599620787606038908
+run: 599620787606038908
+data_conv: 599620788167387000
+data_conv: 599620788728719831
+^CTraceback (most recent call last):
+  File "/home/lxie2/Documents/Python3/PolarDataStream/no_plot_GF.py", line 191, in <module>
+    loop.run_until_complete(main())
+  File "/home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/base_events.py", line 629, in run_until_complete
+    self.run_forever()
+  File "/home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/base_events.py", line 596, in run_forever
+    self._run_once()
+  File "/home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/asyncio/base_events.py", line 1854, in _run_once
+    event_list = self._selector.select(timeout)
+  File "/home/lxie2/miniconda3/envs/bleak_env/lib/python3.9/selectors.py", line 469, in select
+    fd_event_list = self._selector.poll(timeout, max_ev)
+KeyboardInterrupt
