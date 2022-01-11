@@ -113,11 +113,11 @@ async def run(client, debug=False):
     model_number = await client.read_gatt_char(MODEL_NBR_UUID)
     print("Model Number: {0}".format("".join(map(chr, model_number))))
 
-    manufacturer_name = await client.read_gatt_char(MANUFACTURER_NAME_UUID)
-    print("Manufacturer Name: {0}".format("".join(map(chr, manufacturer_name))))
-
-    battery_level = await client.read_gatt_char(BATTERY_LEVEL_UUID)
-    print("Battery Level: {0}%".format(int(battery_level[0])))
+    # manufacturer_name = await client.read_gatt_char(MANUFACTURER_NAME_UUID)
+    # print("Manufacturer Name: {0}".format("".join(map(chr, manufacturer_name))))
+    #
+    # battery_level = await client.read_gatt_char(BATTERY_LEVEL_UUID)
+    # print("Battery Level: {0}%".format(int(battery_level[0])))
 
     att_read = await client.read_gatt_char(PMD_CONTROL)
 
