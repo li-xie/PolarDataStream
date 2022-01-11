@@ -162,7 +162,7 @@ async def run(client, debug=False):
         # n = n + 130
 
     # plt.show()
-
+    print(f'a = {a}')
     # Stop the stream once data is collected
     await client.stop_notify(PMD_DATA)
     print("Stopping ECG data...")
@@ -174,7 +174,7 @@ async def run(client, debug=False):
 async def main():
     try:
         async with BleakClient(ADDRESS) as client:
-            signal.signal(signal.SIGINT, keyboardInterrupt_handler)
+            # signal.signal(signal.SIGINT, keyboardInterrupt_handler)
             tasks = [
                 asyncio.ensure_future(run(client, True)),
             ]
