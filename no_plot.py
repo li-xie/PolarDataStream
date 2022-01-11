@@ -88,6 +88,7 @@ def data_conv(sender, data):
             offset += step
             ecg_session_data.extend([ecg])
             ecg_session_time.extend([timestamp])
+    print(f'data_conv: {ecg_session_time[-1]:6.2}')
 
 
 def convert_array_to_signed_int(data, offset, length):
@@ -129,34 +130,35 @@ async def run(client, debug=False):
     print("Collecting ECG data...")
 
     # Plot configurations
-    plt.style.use("ggplot")
-    fig = plt.figure(figsize=(15, 6))
-    move_figure(fig, 2300, 0)
-    ax = fig.add_subplot()
-    fig.show()
+    # plt.style.use("ggplot")
+    # fig = plt.figure(figsize=(15, 6))
+    # move_figure(fig, 2300, 0)
+    # ax = fig.add_subplot()
+    # fig.show()
 
-    plt.title(
-        "Live ECG Stream on Polar-H10", fontsize=15,
-    )
-    plt.ylabel("Voltage in millivolts", fontsize=15)
-    plt.xlabel(
-        "\nData source: www.pareeknikhil.medium.com | " "Author: @pareeknikhil",
-        fontsize=10,
-    )
-
-    n = ECG_SAMPLING_FREQ
+    # plt.title(
+    #     "Live ECG Stream on Polar-H10", fontsize=15,
+    # )
+    # plt.ylabel("Voltage in millivolts", fontsize=15)
+    # plt.xlabel(
+    #     "\nData source: www.pareeknikhil.medium.com | " "Author: @pareeknikhil",
+    #     fontsize=10,
+    # )
+    #
+    # n = ECG_SAMPLING_FREQ
 
     while True:
 
         # Collecting ECG data for 1 second
-        await asyncio.sleep(3)
-        plt.autoscale(enable=True, axis="y", tight=True)
-        ax.plot(ecg_session_data, color="r")
-        fig.canvas.draw()
-        ax.set_xlim(left=n - 130, right=n)
-        n = n + 130
+        await asyncio.sleep(1)
+        print(f'run: {ecg_session_time[-1]:6.2}')
+        # plt.autoscale(enable=True, axis="y", tight=True)
+        # ax.plot(ecg_session_data, color="r")
+        # fig.canvas.draw()
+        # ax.set_xlim(left=n - 130, right=n)
+        # n = n + 130
 
-    plt.show()
+    # plt.show()
 
     # Stop the stream once data is collected
     await client.stop_notify(PMD_DATA)
