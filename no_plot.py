@@ -88,7 +88,7 @@ def data_conv(sender, data):
             offset += step
             ecg_session_data.extend([ecg])
             ecg_session_time.extend([timestamp])
-    print(f'data_conv: {ecg_session_time[-1]:6.2}')
+    print(f'data_conv: {ecg_session_time[-1]}')
 
 
 def convert_array_to_signed_int(data, offset, length):
@@ -151,7 +151,7 @@ async def run(client, debug=False):
 
         # Collecting ECG data for 1 second
         await asyncio.sleep(1)
-        print(f'run: {ecg_session_time[-1]:6.2}')
+        print(f'run: {ecg_session_time[-1]}')
         # plt.autoscale(enable=True, axis="y", tight=True)
         # ax.plot(ecg_session_data, color="r")
         # fig.canvas.draw()
