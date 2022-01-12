@@ -162,13 +162,13 @@ async def run(client, debug=False):
         # n = n + 130
 
     # plt.show()
-    print(f'a = {a}')
+    print(f'run_flag = {run_flag}')
     # Stop the stream once data is collected
     await client.stop_notify(PMD_DATA)
     print("Stopping ECG data...")
     print("[CLOSED] application closed.")
-
-    sys.exit(0)
+    return(0)
+    # sys.exit(0)
 
 
 async def main():
