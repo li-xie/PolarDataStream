@@ -68,7 +68,7 @@ def handler():
 # Bit conversion of the Hexadecimal stream
 def data_conv(sender, data):
     if data[0] == 0x00:
-        timestamp = convert_to_unsigned_long(data, 1, 8)
+        timestamp = convert_to_unsigned_long(data, 1, 6)
         step = 3
         samples = data[10:]
         offset = 0
