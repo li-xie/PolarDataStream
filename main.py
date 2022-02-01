@@ -68,7 +68,7 @@ def handler():
 # Bit conversion of the Hexadecimal stream
 def data_conv(sender, data):
     if data[0] == 0x00:
-        timestamp = convert_to_unsigned_long(data, 1, 6)
+        timestamp = convert_to_unsigned_long(data, 1, 7)
         step = 3
         samples = data[10:]
         offset = 0
@@ -121,7 +121,7 @@ async def main():
         try:
             while True:
                 # Collecting ECG data for 1 second
-                await asyncio.sleep(60)
+                await asyncio.sleep(300)
                 i += 1
                 global ecg_session_data, ecg_session_time
                 ecg_time_write = ecg_session_time
