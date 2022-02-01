@@ -1,15 +1,16 @@
 import asyncio
 import math
 import os
-import signal
-import sys
-import time
+from signal import SIGINT
+import pickle
+# import sys
+# import time
 
-import pandas as pd
+# import pandas as pd
 from bleak import BleakClient
 from bleak.uuids import uuid16_dict
-import matplotlib.pyplot as plt
-import matplotlib
+# import matplotlib.pyplot as plt
+# import matplotlib
 
 """ Predefined UUID (Universal Unique Identifier) mapping are based on Heart Rate GATT service Protocol that most
 Fitness/Heart Rate device manufacturer follow (Polar H10 in this case) to obtain a specific response input from
@@ -55,24 +56,12 @@ ECG_SAMPLING_FREQ = 130
 ecg_session_data = []
 ecg_session_time = []
 
-
-# Positoning/Pinnning the real-time plot window on the screen
-def move_figure(f, x, y):
-    """Move figure's upper left corner to pixel (x, y)"""
-    backend = matplotlib.get_backend()
-    if backend == "TkAgg":
-        f.canvas.manager.window.wm_geometry("+%d+%d" % (x, y))
-    elif backend == "WXAgg":
-        f.canvas.manager.window.SetPosition((x, y))
-    else:
-        # This works for QT and GTK
-        # You can also use window.setGeometry
-        f.canvas.manager.window.move(x, y)
-
-
 # Keyboard Interrupt Handler
-def keyboardInterrupt_handler(signum, frame):
-    print("  key board interrupt received...")
+def handler():
+    loop = asyncio.get_running_loop()
+    for task in asyncio.all_tasks(loop=loop):
+        task.cancel()
+    print("Keyboard interrupt received...")
     print("----------------Recording stopped------------------------")
 
 
@@ -87,7 +76,8 @@ def data_conv(sender, data):
             ecg = convert_array_to_signed_int(samples, offset, step)
             offset += step
             ecg_session_data.extend([ecg])
-            ecg_session_time.extend([timestamp])
+            ecg_session_time.extend([0])
+        ecg_session_time[-1] = timestamp
 
 
 def convert_array_to_signed_int(data, offset, length):
@@ -102,85 +92,54 @@ def convert_to_unsigned_long(data, offset, length):
     )
 
 
-## Aynchronous task to start the data stream for ECG ##
-async def run(client, debug=False):
-
-    ## Writing chracterstic description to control point for request of UUID (defined above) ##
-
-    await client.is_connected()
-    print("---------Device connected--------------")
-
-    model_number = await client.read_gatt_char(MODEL_NBR_UUID)
-    print("Model Number: {0}".format("".join(map(chr, model_number))))
-
-    # manufacturer_name = await client.read_gatt_char(MANUFACTURER_NAME_UUID)
-    # print("Manufacturer Name: {0}".format("".join(map(chr, manufacturer_name))))
-    #
-    # battery_level = await client.read_gatt_char(BATTERY_LEVEL_UUID)
-    # print("Battery Level: {0}%".format(int(battery_level[0])))
-
-    att_read = await client.read_gatt_char(PMD_CONTROL)
-
-    await client.write_gatt_char(PMD_CONTROL, ECG_WRITE)
-
-    # ECG stream started
-    await client.start_notify(PMD_DATA, data_conv)
-
-    print("Collecting ECG data...")
-
-    # Plot configurations
-    plt.style.use("ggplot")
-    fig = plt.figure(figsize=(15, 6))
-    move_figure(fig, 2300, 0)
-    ax = fig.add_subplot()
-    fig.show()
-
-    plt.title(
-        "Live ECG Stream on Polar-H10", fontsize=15,
-    )
-    plt.ylabel("Voltage in millivolts", fontsize=15)
-    plt.xlabel(
-        "\nData source: www.pareeknikhil.medium.com | " "Author: @pareeknikhil",
-        fontsize=10,
-    )
-
-    n = ECG_SAMPLING_FREQ
-
-    while True:
-
-        # Collecting ECG data for 1 second
-        await asyncio.sleep(1)
-        plt.autoscale(enable=True, axis="y", tight=True)
-        ax.plot(ecg_session_data, color="r")
-        fig.canvas.draw()
-        ax.set_xlim(left=n - 130, right=n)
-        n = n + 130
-
-    plt.show()
-
-    # Stop the stream once data is collected
-    await client.stop_notify(PMD_DATA)
-    print("Stopping ECG data...")
-    print("[CLOSED] application closed.")
-
-    sys.exit(0)
-
-
 async def main():
-    try:
-        async with BleakClient(ADDRESS) as client:
-            signal.signal(signal.SIGINT, keyboardInterrupt_handler)
-            tasks = [
-                asyncio.ensure_future(run(client, True)),
-            ]
+    loop = asyncio.get_running_loop()
+    loop.add_signal_handler(SIGINT, handler)
+    async with BleakClient(ADDRESS) as client:
+        await client.is_connected()
+        print("---------Device connected--------------")
 
-            await asyncio.gather(*tasks)
-    except:
-        pass
+        model_number = await client.read_gatt_char(MODEL_NBR_UUID)
+        print("Model Number: {0}".format("".join(map(chr, model_number))))
 
+        # manufacturer_name = await client.read_gatt_char(MANUFACTURER_NAME_UUID)
+        # print("Manufacturer Name: {0}".format("".join(map(chr, manufacturer_name))))
+        #
+        # battery_level = await client.read_gatt_char(BATTERY_LEVEL_UUID)
+        # print("Battery Level: {0}%".format(int(battery_level[0])))
+
+        att_read = await client.read_gatt_char(PMD_CONTROL)
+
+        await client.write_gatt_char(PMD_CONTROL, ECG_WRITE)
+
+        # ECG stream started
+        await client.start_notify(PMD_DATA, data_conv)
+
+        print("Collecting ECG data...")
+
+        i = 0
+        try:
+            while True:
+                # Collecting ECG data for 1 second
+                await asyncio.sleep(60)
+                i += 1
+                global ecg_session_data, ecg_session_time
+                ecg_time_write = ecg_session_time
+                ecg_session_time = []
+                ecg_data_write = ecg_session_data
+                ecg_session_data = []
+                with open(f't{i}.pkl', 'wb') as t_file:
+                    pickle.dump(ecg_time_write, t_file)
+                with open(f'd{i}.pkl', 'wb') as d_file:
+                    pickle.dump(ecg_data_write, d_file)
+        except asyncio.CancelledError:
+            # Stop the stream once data is collected
+            await client.stop_notify(PMD_DATA)
+            print("Stopping ECG data...")
+            print("[CLOSED] application closed.")
+
+        # sys.exit(0)
 
 if __name__ == "__main__":
     os.environ["PYTHONASYNCIODEBUG"] = str(1)
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(main())
+    asyncio.run(main())
